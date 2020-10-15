@@ -1,0 +1,38 @@
+#version 330 core
+
+smooth in float depth;
+smooth in vec3 colort;
+in vec3 normal;
+in vec3 FragPos;
+
+// la position dans la texture. elle varie pour tous les fragments
+//smooth in vec2 UV;
+
+// la texture est uniforme car "comune a tous les pixels"
+//uniform sampler2DRect loctexture;
+
+//La position de la lumière
+vec3 lightPos = vec3(0.0f, 1.0f, 1.0f);
+
+out vec4 color;
+
+void main(){
+  //vec4 coltex = texture( loctexture, UV );
+  // on melange la texture (si le alpha de ce pixel de texture n'est pas trop transparent)
+  // avec la couleur de surface interpolee (si la texture est transparente a ce fragment la)
+  
+  //Lumiere ambiente
+  float ambientStrength = 0.1;
+  vec3 ambient = ambientStrength * vec3(1.0);
+  
+  //Lumiere diffusee
+  vec3 lightDir = normalize(lightPos - FragPos);
+  float diff = max(dot(normal, lightDir), 0.0);
+  vec3 diffuse = diff * vec3(1.0);
+  
+  //Rendu final de la couleur plus la lumiere
+  vec3 finalColor = (ambient + diffuse) * colort;
+  
+  color = vec4(finalColor, 1.0f);
+  gl_FragDepth = 1.0-depth/10.0;   
+}

@@ -1,0 +1,32 @@
+#version 330 core
+
+//Entrees
+//Coordonnees et couleurs
+layout(location = 0) in vec3 vertexPosition_modelspace;
+layout(location = 1) in vec3 vertexColor_modelspace;
+
+//Normal pour la lumiere
+layout(location = 2) in vec3 vertexNormal_modelspace;
+//layout(location = 2) in vec2 vertexTexcoord_modelspace;
+
+// Sortie
+smooth out vec3 colort;
+smooth out float depth;
+out vec3 normal;
+out vec3 FragPos;
+//smooth out vec2 UV;
+
+// Params
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+void main(){
+  gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPosition_modelspace, 1.0);
+  depth  = gl_Position.z;
+  FragPos = vec3(modelMatrix * vec4(vertexPosition_modelspace, 1.0f));
+  colort = vertexColor_modelspace;
+  normal = vertexNormal_modelspace;
+  // on fait juste passer les coordonnes UV du vertex au fragment shader car ca fera l'interpolation pour chaque fragment
+  //UV     = vertexTexcoord_modelspace;
+}
